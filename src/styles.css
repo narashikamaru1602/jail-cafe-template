@@ -1,0 +1,451 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: 2px;
+  --radius-md: 2px;
+  --radius-lg: 3px;
+  --radius-xl: 4px;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-sage: var(--sage);
+  --color-ember: var(--ember);
+  --color-iron: var(--iron);
+  --color-steel: var(--steel);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --font-display: "Cormorant Garamond", "Times New Roman", serif;
+  --font-sans: "Jost", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+/* ============================================================================
+   CELLHOUSE — DESIGN TOKENS
+   ----------------------------------------------------------------------------
+   Dark cinematic prison palette: near-black charcoal grounds, aged iron
+   surfaces, steel hairlines, restrained brass highlights, one warm ember
+   glow (the corridor lamp). Keep component styling on these tokens — avoid
+   hard-coded hex values in components.
+   ============================================================================ */
+:root {
+  --radius: 2px;
+
+  /* grounds — near-black charcoal */
+  --background: oklch(0.145 0.005 65);
+  --foreground: oklch(0.93 0.012 85); /* warm ivory */
+
+  /* surfaces — aged iron panels */
+  --card: oklch(0.185 0.006 65);
+  --card-foreground: oklch(0.93 0.012 85);
+  --secondary: oklch(0.23 0.006 65);
+  --secondary-foreground: oklch(0.93 0.012 85);
+  --muted: oklch(0.225 0.005 65);
+  --accent: oklch(0.29 0.007 65); /* hover wash on iron */
+
+  /* highlight — restrained brass / warm lamp */
+  --primary: oklch(0.79 0.088 82);
+  --primary-foreground: oklch(0.145 0.005 65);
+  --ember: oklch(0.72 0.13 45); /* corridor lamp warmth */
+  --muted-foreground: oklch(0.67 0.012 80); /* steel-grey text */
+
+  /* produce marker — kept green by convention (veg dot on the menu) */
+  --sage: oklch(0.7 0.12 150);
+
+  /* iron hairlines */
+  --border: oklch(0.33 0.007 70 / 60%);
+  --input: oklch(0.33 0.007 70 / 75%);
+  --ring: oklch(0.79 0.088 82);
+
+  /* extended iron system (see @theme above for the utility mappings) */
+  --iron: oklch(0.17 0.005 65); /* dark metal panel */
+  /* mid steel — text on `.cell-plate-steel`. Lifted from oklch(0.47 …) so
+     normal-size steel text clears ~4.5:1 against the charcoal grounds
+     (0.47 measured ≈2.9:1). Borders/details stay on --border; this token
+     only tints plate text, so the dark hierarchy is unchanged. */
+  --steel: oklch(0.66 0.01 70);
+
+  /* Live height of the fixed header (kept in sync by <Navbar> via
+     ResizeObserver). Used by the mobile nav panel's max-height and the
+     /menu sticky filter offset so they never slip under the navbar. */
+  --nav-h: 64px;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* dark, restrained scrollbar to match the iron surfaces */
+    scrollbar-color: oklch(0.33 0.007 70) transparent;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 300;
+  }
+
+  ::selection {
+    background: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: oklch(0.33 0.007 70);
+    border-radius: 0;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: oklch(0.45 0.01 75);
+  }
+}
+
+/* ============================================================================
+   TYPOGRAPHY / MICRO-LABEL HELPERS
+   ============================================================================ */
+
+/* Small tracked brass label — the eyebrow used across sections. */
+@utility eyebrow {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+}
+
+/* Institutional plate label — mono, brass, hairline box. Reads like a cell
+   number plate / inmate record tag. Used for eyebrows, chips and meta rows. */
+@utility cell-plate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-primary);
+  border: 1px solid color-mix(in oklab, var(--color-primary) 38%, transparent);
+  background: color-mix(in oklab, var(--color-primary) 7%, transparent);
+  padding: 0.55em 0.9em;
+}
+
+/* Non-interactive variant — same plate language, steel instead of brass. */
+@utility cell-plate-steel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--color-steel);
+  border: 1px solid var(--color-border);
+  background: color-mix(in oklab, var(--color-steel) 6%, transparent);
+  padding: 0.55em 0.9em;
+}
+
+@utility rule-line {
+  height: 1px;
+  width: 3rem;
+  background: linear-gradient(to right, var(--color-primary), transparent);
+}
+
+/* ============================================================================
+   PRISON-BAR / IRON UI SYSTEM
+   ----------------------------------------------------------------------------
+   Structural, not decorative spam: used for section boundaries, hero framing,
+   card frames and dividers so the UI reads as built from the same iron
+   architecture the camera walks through in the intro.
+   ============================================================================ */
+
+/* Vertical iron rods behind a surface. Subtle (≈4% lift) so content always
+   wins contrast; use over near-black grounds only. */
+@utility bar-field {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 44px,
+    rgb(0 0 0 / 45%) 44px 46px,
+    oklch(0.33 0.007 70 / 30%) 46px 52px,
+    rgb(0 0 0 / 45%) 52px 54px,
+    transparent 54px 58px
+  );
+}
+
+/* Denser rod field for smaller areas (mobile hero, side gutters). */
+@utility bar-field-dense {
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 26px,
+    rgb(0 0 0 / 45%) 26px 27px,
+    oklch(0.33 0.007 70 / 28%) 27px 31px,
+    rgb(0 0 0 / 45%) 31px 32px,
+    transparent 32px 36px
+  );
+}
+
+/* Gate-rail divider: two iron rails with short rods between them. Sits
+   between major sections as a structural boundary. */
+@utility bar-rail {
+  height: 30px;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  background-image: repeating-linear-gradient(
+    90deg,
+    transparent 0 13px,
+    oklch(0.33 0.007 70 / 55%) 13px 15px,
+    transparent 15px 28px
+  );
+}
+
+/* Raised iron panel: dark metal gradient, hairline edge, top highlight and
+   four corner rivets. The base container for framed cards. */
+@utility iron-panel {
+  position: relative;
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--card) 92%, white 8%),
+    color-mix(in oklab, var(--card) 96%, black 4%)
+  );
+  border: 1px solid var(--color-border);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 4%),
+    0 24px 44px -30px rgb(0 0 0 / 90%);
+}
+
+/* Corner rivets — layer on top of an iron-panel (or any bordered frame). */
+@utility rivets {
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 0 0, oklch(0.5 0.01 75 / 85%) 0 2px, transparent 2.5px),
+      radial-gradient(circle at 100% 0, oklch(0.5 0.01 75 / 85%) 0 2px, transparent 2.5px),
+      radial-gradient(circle at 0 100%, oklch(0.5 0.01 75 / 85%) 0 2px, transparent 2.5px),
+      radial-gradient(circle at 100% 100%, oklch(0.5 0.01 75 / 85%) 0 2px, transparent 2.5px);
+  }
+}
+
+/* Inset brass hairline inside a frame — the "plated" image/card treatment. */
+@utility frame-inset {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 10px;
+    border: 1px solid color-mix(in oklab, var(--color-primary) 26%, transparent);
+    pointer-events: none;
+  }
+}
+
+/* Horizontal iron rule with a brass diamond plate at its centre. */
+@utility iron-rule {
+  position: relative;
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-border) 12%,
+    var(--color-border) 88%,
+    transparent
+  );
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    transform: translate(-50%, -50%) rotate(45deg);
+    background: color-mix(in oklab, var(--color-primary) 70%, transparent);
+  }
+}
+
+/* Film grain — static SVG noise, one cheap overlay that keeps large near-black
+   areas from looking flat. Apply to a full-bleed layer, keep opacity low. */
+@utility grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* ============================================================================
+   SCROLL REVEAL / LINKS (existing system)
+   ============================================================================ */
+
+@utility reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+
+  &[data-visible="true"] {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@utility link-underline {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -4px;
+    height: 1px;
+    width: 100%;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  &:hover::after,
+  &[data-status="active"]::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* ============================================================================
+   CINEMATIC → UI HANDOFF + HERO ENTRANCE
+   ----------------------------------------------------------------------------
+   Pure CSS, no JS per frame. Played once when the intro overlay begins its
+   exit (see IntroHandoff.tsx) so the interface feels like a continuation of
+   the gate shot: an exposure bloom, a diagonal light sweep, then the page.
+   ============================================================================ */
+
+@keyframes handoff-bloom {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
+
+@keyframes handoff-sweep {
+  0% {
+    transform: translateX(-120%) skewX(-14deg);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(220%) skewX(-14deg);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(26px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes lamp-flicker {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.handoff-bloom {
+  animation: handoff-bloom 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.handoff-sweep {
+  animation: handoff-sweep 1.05s cubic-bezier(0.65, 0, 0.35, 1) forwards;
+}
+
+.hero-rise {
+  opacity: 0; /* revealed by the animation; visible without JS */
+  animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.lamp {
+  animation: lamp-flicker 5.5s ease-in-out infinite;
+}
+
+/* The site must stay fully usable with motion reduced: entrance/transition
+   animations become instant, the intro already falls back on its own. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .handoff-bloom,
+  .handoff-sweep,
+  .hero-rise,
+  .lamp {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .handoff-bloom,
+  .handoff-sweep {
+    display: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
